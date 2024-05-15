@@ -1,4 +1,11 @@
-import { observer } from "mobx-react-lite"
+import { type ContentStyle } from "@shopify/flash-list"
+import {
+  Episode,
+  getDatePublished,
+  getDuration,
+  getParsedTitleAndSubtitle,
+  useEpisodeStore,
+} from "app/store"
 import React, { ComponentType, FC, useEffect, useMemo } from "react"
 import {
   AccessibilityProps,
@@ -12,7 +19,6 @@ import {
   View,
   ViewStyle,
 } from "react-native"
-import { type ContentStyle } from "@shopify/flash-list"
 import Animated, {
   Extrapolate,
   interpolate,
@@ -32,8 +38,6 @@ import {
   Toggle,
 } from "../components"
 import { isRTL, translate } from "../i18n"
-import { useStores } from "../models"
-import { Episode } from "../models/Episode"
 import { DemoTabScreenProps } from "../navigators/DemoNavigator"
 import { colors, spacing } from "../theme"
 import { delay } from "../utils/delay"
@@ -46,10 +50,9 @@ const rnrImage2 = require("../../assets/images/demo/rnr-image-2.png")
 const rnrImage3 = require("../../assets/images/demo/rnr-image-3.png")
 const rnrImages = [rnrImage1, rnrImage2, rnrImage3]
 
-export const DemoPodcastListScreen: FC<DemoTabScreenProps<"DemoPodcastList">> = observer(
+export const DemoPodcastListScreen: FC<DemoTabScreenProps<"DemoPodcastList">> =
   function DemoPodcastListScreen(_props) {
-    const { episodeStore } = useStores()
-
+    const episodeStore = useEpisodeStore()
     const [refreshing, setRefreshing] = React.useState(false)
     const [isLoading, setIsLoading] = React.useState(false)
 
@@ -114,7 +117,7 @@ export const DemoPodcastListScreen: FC<DemoTabScreenProps<"DemoPodcastList">> = 
                   <Toggle
                     value={episodeStore.favoritesOnly}
                     onValueChange={() =>
-                      episodeStore.setProp("favoritesOnly", !episodeStore.favoritesOnly)
+                      episodeStore.setFavoritesOnly(!episodeStore?.favoritesOnly)
                     }
                     variant="switch"
                     labelTx="demoPodcastListScreen.onlyFavorites"
@@ -136,10 +139,9 @@ export const DemoPodcastListScreen: FC<DemoTabScreenProps<"DemoPodcastList">> = 
         />
       </Screen>
     )
-  },
-)
+  }
 
-const EpisodeCard = observer(function EpisodeCard({
+const EpisodeCard = function EpisodeCard({
   episode,
   isFavorite,
   onPressFavorite,
@@ -149,7 +151,9 @@ const EpisodeCard = observer(function EpisodeCard({
   isFavorite: boolean
 }) {
   const liked = useSharedValue(isFavorite ? 1 : 0)
-
+  const datePublished = getDatePublished(episode)
+  const duration = getDuration(episode)
+  const parsedTitleAndSubtitle = getParsedTitleAndSubtitle(episode)
   const imageUri = useMemo<ImageSourcePropType>(() => {
     return rnrImages[Math.floor(Math.random() * rnrImages.length)]
   }, [])
@@ -256,20 +260,20 @@ const EpisodeCard = observer(function EpisodeCard({
           <Text
             style={$metadataText}
             size="xxs"
-            accessibilityLabel={episode.datePublished.accessibilityLabel}
+            accessibilityLabel={datePublished.accessibilityLabel}
           >
-            {episode.datePublished.textLabel}
+            {datePublished.textLabel}
           </Text>
           <Text
             style={$metadataText}
             size="xxs"
-            accessibilityLabel={episode.duration.accessibilityLabel}
+            accessibilityLabel={episode?.duration?.accessibilityLabel}
           >
-            {episode.duration.textLabel}
+            {episode?.duration?.textLabel}
           </Text>
         </View>
       }
-      content={`${episode.parsedTitleAndSubtitle.title} - ${episode.parsedTitleAndSubtitle.subtitle}`}
+      content={`${episode?.parsedTitleAndSubtitle?.title} - ${episode?.parsedTitleAndSubtitle?.subtitle}`}
       {...accessibilityHintProps}
       RightComponent={<Image source={imageUri} style={$itemThumbnail} />}
       FooterComponent={
@@ -286,7 +290,7 @@ const EpisodeCard = observer(function EpisodeCard({
         >
           <Text
             size="xxs"
-            accessibilityLabel={episode.duration.accessibilityLabel}
+            accessibilityLabel={episode?.duration?.accessibilityLabel}
             weight="medium"
             text={
               isFavorite
@@ -298,7 +302,7 @@ const EpisodeCard = observer(function EpisodeCard({
       }
     />
   )
-})
+}
 
 // #region Styles
 const $screenContentContainer: ViewStyle = {

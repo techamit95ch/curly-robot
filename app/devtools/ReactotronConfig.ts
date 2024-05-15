@@ -3,16 +3,15 @@
  * free desktop app for inspecting and debugging your React Native app.
  * @see https://github.com/infinitered/reactotron
  */
-import { Platform, NativeModules } from "react-native"
 
-import AsyncStorage from "@react-native-async-storage/async-storage"
-import { ArgType } from "reactotron-core-client"
-import { mst } from "reactotron-mst"
+import { goBack, resetRoot, navigate } from "app/navigators/navigationUtilities";
+import { clear } from "app/utils/storage";
+import ZustandStorage from "app/utils/storage/storage";
+import { Platform, NativeModules } from "react-native";
+import { ArgType } from "reactotron-core-client";
+import { mst } from "reactotron-mst";
+import { Reactotron } from "./ReactotronClient";
 
-import { clear } from "app/utils/storage"
-import { goBack, resetRoot, navigate } from "app/navigators/navigationUtilities"
-
-import { Reactotron } from "./ReactotronClient"
 
 const reactotron = Reactotron.configure({
   name: require("../../package.json").name,
@@ -22,13 +21,12 @@ const reactotron = Reactotron.configure({
   },
 }).use(
   mst({
-    /* ignore some chatty `mobx-state-tree` actions */
     filter: (event) => /postProcessSnapshot|@APPLY_SNAPSHOT/.test(event.name) === false,
   }),
 )
 
 if (Platform.OS !== "web") {
-  reactotron.setAsyncStorageHandler?.(AsyncStorage)
+  reactotron.setAsyncStorageHandler?.(ZustandStorage)
   reactotron.useReactNative({
     networking: {
       ignoreUrls: /symbolicate/,

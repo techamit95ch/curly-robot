@@ -1,9 +1,17 @@
-import { observer } from "mobx-react-lite"
-import React, { FC } from "react"
-import { Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
+import { useFocusEffect } from "@react-navigation/native"
 import { Button, Text } from "app/components"
+import { useStore } from "app/store"
+import React, { FC, useEffect, useRef, useState } from "react"
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  ImageStyle,
+  TextStyle,
+  View,
+  ViewStyle,
+} from "react-native"
 import { isRTL } from "../i18n"
-import { useStores } from "../models"
 import { AppStackScreenProps } from "../navigators"
 import { colors, spacing } from "../theme"
 import { useHeader } from "../utils/useHeader"
@@ -14,11 +22,17 @@ const welcomeFace = require("../../assets/images/welcome-face.png")
 
 interface WelcomeScreenProps extends AppStackScreenProps<"Welcome"> {}
 
-export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeScreen(_props) {
+const WelcomeScreen: FC<WelcomeScreenProps> = (_props) => {
+  const isCurrentView = useRef(true)
+  const [loading, setLoading] = useState(true)
+
+  useFocusEffect(() => {
+    isCurrentView.current = false
+    setLoading(false)
+  })
+
   const { navigation } = _props
-  const {
-    authenticationStore: { logout },
-  } = useStores()
+  const logout = useStore((state) => state.logout)
 
   function goNext() {
     navigation.navigate("Demo", { screen: "DemoShowroom", params: {} })
@@ -34,7 +48,18 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
 
   const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
 
-  return (
+  return loading ? (
+    <View
+      style={{
+        backgroundColor: "#191015",
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <ActivityIndicator />
+    </View>
+  ) : (
     <View style={$container}>
       <View style={$topContainer}>
         <Image style={$welcomeLogo} source={welcomeLogo} resizeMode="contain" />
@@ -60,7 +85,8 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
       </View>
     </View>
   )
-})
+}
+export default WelcomeScreen
 
 const $container: ViewStyle = {
   flex: 1,

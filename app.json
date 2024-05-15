@@ -17,9 +17,7 @@
       "fallbackToCacheTimeout": 0
     },
     "jsEngine": "hermes",
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "android": {
       "icon": "./assets/images/app-icon-android-legacy.png",
       "package": "com.curlyrobot",
@@ -56,12 +54,18 @@
     "plugins": [
       "expo-localization",
       [
+        "react-native-vision-camera",
+        {
+          "cameraPermissionText": "$(PRODUCT_NAME) needs access to your Camera.",
+          "enableCodeScanner": true
+        }
+      ],
+      [
         "expo-build-properties",
         {
           "ios": {
             "newArchEnabled": true,
-            "flipper": false,
-            "deploymentTarget": "13.4"
+            "flipper": false
           },
           "android": {
             "newArchEnabled": true
