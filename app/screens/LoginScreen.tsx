@@ -1,11 +1,12 @@
-import { useNavigation } from "@react-navigation/core"
+import { useNavigation } from "@react-navigation/core";
 import { useAuthenticationStore, useStore, validationErrorSelector } from "app/store"
-import React, { ComponentType, FC, useEffect, useMemo, useRef, useState } from "react"
+import React, { ComponentType, FC, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { TextInput, TextStyle, ViewStyle } from "react-native"
 import { Button, Icon, Screen, Text, TextField, TextFieldAccessoryProps } from "../components"
 import {
   AppStackParamList,
   AppStackScreenProps,
+  navigate,
   navigateAndSimpleReset,
   resetRoot,
 } from "../navigators"
@@ -34,30 +35,41 @@ export const LoginScreen: FC<LoginScreenProps> = function LoginScreen(_props) {
 
     // Return a "cleanup" function that React will run when the component unmounts
     return () => {
-      setAuthPassword("")
-      setAuthEmail("")
+      // setAuthPassword("")
+      // setAuthEmail("")
     }
   }, [])
 
   const error = isSubmitted ? validationError : ""
 
-  function login() {
-    setIsSubmitted(true)
-    setAttemptsCount(attemptsCount + 1)
+  const login = useCallback(async () => {
+    try {
+      setIsSubmitted(true)
+      setAttemptsCount(attemptsCount + 1)
 
-    if (validationError) return
+      // if (validationError) {
+      //   return console.log({ validationError })
+      // }
 
-    // Make a request to your server to get an authentication token.
-    // If successful, reset the fields and set the token.
-    setIsSubmitted(false)
-    setAuthPassword("")
-    setAuthEmail("")
+      // Make a request to your server to get an authentication token.
+      // If successful, reset the fields and set the token.
+      setIsSubmitted(false)
+      // setAuthPassword("")
+      // setAuthEmail("")
 
-    // We'll mock this with a fake token.
-    setAuthToken(String(Date.now()))
-    navigateAndSimpleReset("Welcome")
-    // navigation.replace("Welcome")
-  }
+      // We'll mock this with a fake token.
+      setAuthToken(String(Date.now()))
+      // navigation.goBack()
+      // navigateAndSimpleReset("Welcome")
+
+      // await navigation.replace("Welcome")
+      // resetRoot({ index: 0, routes: [{ name: "Welcome" }] })
+
+      // navigation.replace("Welcome")
+    } catch (error) {
+      console.log({ error })
+    }
+  }, [])
 
   const PasswordRightAccessory: ComponentType<TextFieldAccessoryProps> = useMemo(
     () =>

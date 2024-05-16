@@ -1,18 +1,10 @@
 import { useFocusEffect } from "@react-navigation/native"
-import { Button, Text } from "app/components"
+import { Button, Text } from "app/components";
 import { useStore } from "app/store"
-import React, { FC, useEffect, useRef, useState } from "react"
-import {
-  ActivityIndicator,
-  Alert,
-  Image,
-  ImageStyle,
-  TextStyle,
-  View,
-  ViewStyle,
-} from "react-native"
+import React, { FC, useRef, useState } from "react"
+import { ActivityIndicator, Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
 import { isRTL } from "../i18n"
-import { AppStackScreenProps } from "../navigators"
+import { AppStackScreenProps, navigate } from "../navigators"
 import { colors, spacing } from "../theme"
 import { useHeader } from "../utils/useHeader"
 import { useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
@@ -35,16 +27,19 @@ const WelcomeScreen: FC<WelcomeScreenProps> = (_props) => {
   const logout = useStore((state) => state.logout)
 
   function goNext() {
-    navigation.navigate("Demo", { screen: "DemoShowroom", params: {} })
+    navigation.navigate("Demo")
   }
 
-  useHeader(
-    {
-      rightTx: "common.logOut",
-      onRightPress: logout,
-    },
-    [logout],
-  )
+  // useHeader(
+  //   {
+  //     rightTx: "common.logOut",
+  //     onRightPress: () => {
+  //       logout()
+  //       navigation?.navigate("Login")
+  //     },
+  //   },
+  //   [logout],
+  // )
 
   const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
 
@@ -81,6 +76,16 @@ const WelcomeScreen: FC<WelcomeScreenProps> = (_props) => {
           preset="reversed"
           tx="welcomeScreen.letsGo"
           onPress={goNext}
+        />
+        <Button
+          testID="next-screen-button"
+          preset="reversed"
+          tx="common.logOut"
+          text="logout"
+          onPress={() => {
+            logout()
+            // navigate("Login")
+          }}
         />
       </View>
     </View>

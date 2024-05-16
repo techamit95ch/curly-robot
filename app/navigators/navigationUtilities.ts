@@ -1,16 +1,12 @@
-import {
-  CommonActions,
-  NavigationState,
-  PartialState,
-  createNavigationContainerRef,
-} from "@react-navigation/native"
-import { useState, useEffect, useRef } from "react"
-import { BackHandler, Platform } from "react-native"
-import Config from "../config"
-import type { PersistNavigationConfig } from "../config/config.base"
-import * as storage from "../utils/storage"
-import { useIsMounted } from "../utils/useIsMounted"
-import type { AppStackParamList, NavigationProps } from "./AppNavigator"
+import { CommonActions, NavigationState, PartialState, createNavigationContainerRef } from "@react-navigation/native";
+import { useState, useEffect, useRef } from "react";
+import { BackHandler, Platform } from "react-native";
+import Config from "../config";
+import type { PersistNavigationConfig } from "../config/config.base";
+import * as storage from "../utils/storage";
+import { useIsMounted } from "../utils/useIsMounted";
+import type { AppStackParamList, NavigationProps } from "./AppNavigator";
+
 
 type Storage = typeof storage
 
@@ -175,6 +171,7 @@ export function navigate(name: unknown, params?: unknown) {
   }
 }
 
+
 /**
  * This function is used to go back in a navigation stack, if it's possible to go back.
  * If the navigation stack can't go back, nothing happens.
@@ -201,7 +198,7 @@ export function resetRoot(
 }
 
 export function navigateAndSimpleReset(name: string, index = 0) {
-  if (navigationRef.current?.isReady) {
+  if (navigationRef.current?.isReady()) {
     navigationRef.current?.dispatch(
       CommonActions.reset({
         index,

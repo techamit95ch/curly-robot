@@ -1,10 +1,3 @@
-/**
- * The app navigator (formerly "AppNavigator" and "MainNavigator") is used for the primary
- * navigation flows of your app.
- * Generally speaking, it will contain an auth flow (registration, login, forgot password)
- * and a "main" flow which the user will use once logged in.
- */
-
 import {
   DarkTheme,
   DefaultTheme,
@@ -18,10 +11,9 @@ import { LoginScreen, WelcomeScreen } from "app/screens"
 import { useStore, isAuthenticatedSelector, useAuthenticationStore } from "app/store"
 import { colors } from "app/theme"
 import React, { memo, useCallback } from "react"
-import { useColorScheme } from "react-native"
+import { View, useColorScheme, Text, ActivityIndicator } from "react-native"
 import { shallow } from "zustand/shallow"
 import Config from "../config"
-import { DemoNavigator, DemoTabParamList } from "./DemoNavigator"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 
 /**
@@ -58,6 +50,14 @@ export type AppStackScreenProps<T extends keyof AppStackParamList> = NativeStack
 // Documentation: https://reactnavigation.org/docs/stack-navigator/
 const Stack = createNativeStackNavigator<AppStackParamList>()
 
+const Demo = () => (
+  <View
+    style={{ flex: 1, backgroundColor: "#232332", alignItems: "center", justifyContent: "center" }}
+  >
+    <ActivityIndicator />
+  </View>
+)
+
 const AppStack = function AppStack() {
   // useAuthenticationStore
   const authToken = useStore(
@@ -66,32 +66,34 @@ const AppStack = function AppStack() {
   )
   return (
     <Stack.Navigator
-      screenOptions={{ headerShown: false, navigationBarColor: colors.background }}
+      screenOptions={{
+        headerShown: false,
+        navigationBarColor: colors.background,
+        headerBackButtonMenuEnabled: true,
+        headerTintColor: "#8e8e8e",
+      }}
       initialRouteName={authToken ? "Welcome" : "Login"}
     >
-      {/* {isAuthenticated || !!authToken ? (
-        <Stack.Group>
-          <Stack.Screen name="Welcome" component={WelcomeScreen} />
-          <Stack.Screen name="Demo" component={DemoNavigator} />
-        </Stack.Group>
+      {authToken ? (
+        <>
+          <Stack.Screen
+            name="Welcome"
+            component={WelcomeScreen}
+            options={{
+              headerShown: true,
+              headerBackButtonMenuEnabled: true,
+              headerTintColor: "#8e8e8e",
+            }}
+          />
+          <Stack.Screen name="Demo" component={Demo} />
+        </>
       ) : (
-        <Stack.Group>
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Welcome" component={WelcomeScreen} />
-          <Stack.Screen name="Demo" component={DemoNavigator} />
-        </Stack.Group>
-      )} */}
-
-      <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="Welcome" component={WelcomeScreen} />
-      <Stack.Screen name="Demo" component={DemoNavigator} />
-
-      {/** 🔥 Your screens go here */}
-      {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
+        <Stack.Screen name="Login" component={LoginScreen} />
+      )}
     </Stack.Navigator>
   )
 }
-
+const Loading = () => <ActivityIndicator />
 export interface NavigationProps
   extends Partial<React.ComponentProps<typeof NavigationContainer>> {}
 
@@ -104,6 +106,7 @@ export const AppNavigator = memo(function AppNavigator(props: NavigationProps) {
     <NavigationContainer
       ref={navigationRef}
       theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+      fallback={<Loading />}
       {...props}
     >
       <AppStack />
