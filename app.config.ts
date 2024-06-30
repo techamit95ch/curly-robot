@@ -22,6 +22,15 @@ module.exports = ({ config }: ConfigContext): Partial<ExpoConfig> => {
       ...existingPlugins,
       require("./plugins/withSplashScreen").withSplashScreen,
       require("./plugins/withFlipperDisabled").withFlipperDisabled,
+      [
+        require("./plugins/withRequiredHardware").withRequiredHardware,
+        {
+          // More info: https://developer.apple.com/documentation/bundleresources/information_property_list/uirequireddevicecapabilities/
+          ios: ["front-facing-camera", "microphone"],
+          // More info: https://developer.android.com/guide/topics/manifest/uses-feature-element
+          android: ["android.hardware.camera.front", "android.hardware.microphone"],
+        },
+      ],
     ],
   }
 }

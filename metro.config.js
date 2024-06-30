@@ -6,9 +6,9 @@ const config = getDefaultConfig(__dirname);
 
 config.transformer.getTransformOptions = async () => ({
   transform: {
-    experimentalImportSupport: false,
+    experimentalImportSupport: true,
     inlineRequires: true,
   },
-});
+})
 
 module.exports = config;

@@ -8,10 +8,8 @@ import { goBack, resetRoot, navigate } from "app/navigators/navigationUtilities"
 import { clear } from "app/utils/storage";
 import ZustandStorage from "app/utils/storage/storage";
 import { Platform, NativeModules } from "react-native";
-import { ArgType } from "reactotron-core-client";
-import { mst } from "reactotron-mst";
-import { Reactotron } from "./ReactotronClient";
-
+import { ArgType } from "reactotron-core-client"
+import { Reactotron } from "./ReactotronClient"
 
 const reactotron = Reactotron.configure({
   name: require("../../package.json").name,
@@ -19,11 +17,7 @@ const reactotron = Reactotron.configure({
     /** since this file gets hot reloaded, let's clear the past logs every time we connect */
     Reactotron.clear()
   },
-}).use(
-  mst({
-    filter: (event) => /postProcessSnapshot|@APPLY_SNAPSHOT/.test(event.name) === false,
-  }),
-)
+})
 
 if (Platform.OS !== "web") {
   reactotron.setAsyncStorageHandler?.(ZustandStorage)

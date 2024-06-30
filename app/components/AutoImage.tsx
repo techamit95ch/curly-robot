@@ -1,7 +1,8 @@
 import React, { useLayoutEffect, useState } from "react"
 import { Image, ImageProps, ImageURISource, Platform } from "react-native"
+import Animated, { AnimateProps } from "react-native-reanimated"
 
-export interface AutoImageProps extends ImageProps {
+export interface AutoImageProps extends AnimateProps<ImageProps> {
   /**
    * How wide should the image be?
    */
@@ -70,5 +71,5 @@ export function AutoImage(props: AutoImageProps) {
     [maxWidth, maxHeight],
   )
 
-  return <Image {...ImageProps} style={[{ width, height }, props.style]} />
+  return <Animated.Image {...ImageProps} style={[{ width, height }, props.style]} />
 }

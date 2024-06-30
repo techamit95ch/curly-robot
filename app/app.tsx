@@ -1,10 +1,10 @@
-import { useStore } from "./store"
-import "./i18n"
-import "./utils/ignoreWarnings"
-import { useFonts } from "expo-font"
-import * as Linking from "expo-linking"
+import { useStore } from "./store";
+import "./i18n";
+import "./utils/ignoreWarnings";
+import { useFonts } from "expo-font";
+import * as Linking from "expo-linking";
 import React, { useEffect } from "react"
-import { ViewStyle } from "react-native"
+import { ActivityIndicator, ViewStyle } from "react-native"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-context"
 import Config from "./config"
@@ -75,10 +75,12 @@ function App(props: AppProps) {
   const [areFontsLoaded] = useFonts(customFontsToLoad)
 
   const hasHydrated = useStore((state) => state._hasHydrated)
+
   useEffect(() => {
-    if (hasHydrated) {
-      setTimeout(hideSplashScreen, 500)
-    }
+    // if (hasHydrated) {
+    const time = setTimeout(hideSplashScreen, 500)
+    // }
+    return clearTimeout(time)
   }, [hasHydrated])
 
   // Before we show the app, we have to wait for our state to be ready.
@@ -87,7 +89,12 @@ function App(props: AppProps) {
   // In iOS: application:didFinishLaunchingWithOptions:
   // In Android: https://stackoverflow.com/a/45838109/204044
   // You can replace with your own loading component if you wish.
-  if (!hasHydrated || !isNavigationStateRestored || !areFontsLoaded) return null
+  if (!isNavigationStateRestored || !areFontsLoaded)
+    return (
+      <GestureHandlerRootView style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <ActivityIndicator />
+      </GestureHandlerRootView>
+    )
 
   const linking = {
     prefixes: [prefix],

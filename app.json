@@ -1,6 +1,6 @@
 {
-  "name": "curly-robot",
-  "displayName": "curly-robot",
+  "name": "CurlyRobot",
+  "displayName": "CurlyRobot",
   "expo": {
     "name": "curly-robot",
     "slug": "curly-robot",
@@ -64,11 +64,11 @@
         "expo-build-properties",
         {
           "ios": {
-            "newArchEnabled": true,
+            "newArchEnabled": false,
             "flipper": false
           },
           "android": {
-            "newArchEnabled": true
+            "newArchEnabled": false
           }
         }
       ],
