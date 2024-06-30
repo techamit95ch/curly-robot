@@ -1,3 +1,4 @@
+import { responsive } from "app/utils/responsive"
 import React, { ComponentType } from "react"
 import {
   Pressable,
@@ -6,6 +7,7 @@ import {
   StyleProp,
   TextStyle,
   ViewStyle,
+  StyleSheet,
 } from "react-native"
 import { colors, spacing, typography } from "../theme"
 import { Text, TextProps } from "./Text"
@@ -125,7 +127,7 @@ export function Button(props: ButtonProps) {
       $viewStyleOverride,
       !!pressed && [$pressedViewPresets[preset], $pressedViewStyleOverride],
       !!disabled && $disabledViewStyleOverride,
-    ]
+    ] as const
   }
   /**
    * @param {PressableStateCallbackType} root0 - The root object containing the pressed state.
@@ -138,7 +140,7 @@ export function Button(props: ButtonProps) {
       $textStyleOverride,
       !!pressed && [$pressedTextPresets[preset], $pressedTextStyleOverride],
       !!disabled && $disabledTextStyleOverride,
-    ]
+    ] as const
   }
 
   return (
@@ -173,8 +175,8 @@ export function Button(props: ButtonProps) {
 }
 
 const $baseViewStyle: ViewStyle = {
-  minHeight: 56,
-  borderRadius: 4,
+  minHeight: responsive(56),
+  borderRadius: responsive(4),
   justifyContent: "center",
   alignItems: "center",
   flexDirection: "row",
@@ -184,8 +186,8 @@ const $baseViewStyle: ViewStyle = {
 }
 
 const $baseTextStyle: TextStyle = {
-  fontSize: 16,
-  lineHeight: 20,
+  fontSize: responsive(16),
+  lineHeight: responsive(20),
   fontFamily: typography.primary.medium,
   textAlign: "center",
   flexShrink: 1,
@@ -196,38 +198,43 @@ const $baseTextStyle: TextStyle = {
 const $rightAccessoryStyle: ViewStyle = { marginStart: spacing.xs, zIndex: 1 }
 const $leftAccessoryStyle: ViewStyle = { marginEnd: spacing.xs, zIndex: 1 }
 
-const $viewPresets = {
+const $viewPresets = StyleSheet.create({
   default: [
     $baseViewStyle,
     {
-      borderWidth: 1,
+      borderWidth: responsive(1),
       borderColor: colors.palette.neutral400,
       backgroundColor: colors.palette.neutral100,
     },
   ] as StyleProp<ViewStyle>,
 
-  filled: [$baseViewStyle, { backgroundColor: colors.palette.neutral300 }] as StyleProp<ViewStyle>,
+  filled: [
+    $baseViewStyle,
+    { backgroundColor: colors.palette.neutral300 },
+  ] as const satisfies StyleProp<ViewStyle>,
 
   reversed: [
     $baseViewStyle,
     { backgroundColor: colors.palette.neutral800 },
   ] as StyleProp<ViewStyle>,
-}
+} as const)
 
-const $textPresets: Record<Presets, StyleProp<TextStyle>> = {
+const $textPresets: Record<Presets, StyleProp<TextStyle>> = StyleSheet.create({
   default: $baseTextStyle,
   filled: $baseTextStyle,
   reversed: [$baseTextStyle, { color: colors.palette.neutral100 }],
-}
+} as const)
 
-const $pressedViewPresets: Record<Presets, StyleProp<ViewStyle>> = {
+const $pressedViewPresets: Record<Presets, StyleProp<ViewStyle>> = StyleSheet.create({
   default: { backgroundColor: colors.palette.neutral200 },
   filled: { backgroundColor: colors.palette.neutral400 },
   reversed: { backgroundColor: colors.palette.neutral700 },
-}
+} as const)
 
-const $pressedTextPresets: Record<Presets, StyleProp<TextStyle>> = {
+const $pressedTextPresets: Record<Presets, StyleProp<TextStyle>> = StyleSheet.create({
   default: { opacity: 0.9 },
   filled: { opacity: 0.9 },
   reversed: { opacity: 0.9 },
-}
+} as const)
+
+// yarn add expo-keep-awake expo-calendar expo-barcode-scanner expo-media-library  expo-linear-gradient expo-blur expo-image-manipulator expo-permissions expo-camera expo-file-system expo-notifications expo-splash-screen expo-secure-store expo-av @expo/vector-icons expo-font expo-constants expo-clipboard expo-linking expo-localization expo-network expo-background-fetch expo-location expo-contacts expo-symbols expo-auth-session

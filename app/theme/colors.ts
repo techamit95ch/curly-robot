@@ -81,4 +81,4 @@ export const colors = {
    *
    */
   errorBackground: palette.angry100,
-}
+} as const

@@ -16,7 +16,7 @@ export const customFontsToLoad = {
   spaceGroteskMedium,
   spaceGroteskSemiBold,
   spaceGroteskBold,
-}
+} as const
 
 const fonts = {
   spaceGrotesk: {
@@ -49,7 +49,7 @@ const fonts = {
     // Android only font.
     normal: "monospace",
   },
-}
+} as const
 
 export const typography = {
   /**
@@ -68,4 +68,4 @@ export const typography = {
    * Lets get fancy with a monospace font!
    */
   code: Platform.select({ ios: fonts.courier, android: fonts.monospace }),
-}
+} as const

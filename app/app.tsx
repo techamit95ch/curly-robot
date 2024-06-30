@@ -13,6 +13,7 @@ import { ErrorBoundary } from "./screens/ErrorScreen/ErrorBoundary"
 import { customFontsToLoad } from "./theme"
 import * as storage from "./utils/storage"
 
+
 /* eslint-disable import/first */
 /**
  * Welcome to the main entry point of the app. In this file, we'll
@@ -77,11 +78,14 @@ function App(props: AppProps) {
   const hasHydrated = useStore((state) => state._hasHydrated)
 
   useEffect(() => {
-    // if (hasHydrated) {
-    const time = setTimeout(hideSplashScreen, 500)
-    // }
-    return clearTimeout(time)
-  }, [hasHydrated])
+    if (areFontsLoaded) {
+      hideSplashScreen()
+    }
+  }, [areFontsLoaded])
+
+  // useEffect(() => {
+  //   hideSplashScreen()
+  // }, [])
 
   // Before we show the app, we have to wait for our state to be ready.
   // In the meantime, don't render anything. This will be the background
